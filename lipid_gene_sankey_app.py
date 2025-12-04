@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
-from io import BytesIO
+from io import BytesIO, StringIO
 
 st.set_page_config(page_title="Lipid-Gene Sankey Analysis", layout="wide")
 
@@ -151,7 +151,7 @@ if transcriptome_file and lipid_file:
                 height=900
             )
             
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
             
             # Summary statistics
             st.header("Analysis Summary")
@@ -175,13 +175,11 @@ if transcriptome_file and lipid_file:
             col1, col2 = st.columns(2)
             
             with col1:
-                # HTML export
-                html_buffer = BytesIO()
-                fig.write_html(html_buffer)
-                html_buffer.seek(0)
+                # HTML export - use to_html() method which returns string
+                html_str = fig.to_html()
                 st.download_button(
                     label="Download Sankey (HTML)",
-                    data=html_buffer,
+                    data=html_str,
                     file_name="lipid_gene_sankey.html",
                     mime="text/html"
                 )
